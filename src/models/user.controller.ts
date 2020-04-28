@@ -27,12 +27,6 @@ userRoutes.get('/all', exjwt({secret:jwtSecretAdmin}), async (req: express.Reque
     }
 });
 
-// userRoutes.get('/find/:username', async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
-//     const usernameToFind = req.params.username;
-//     let user = await User.findOne({username: usernameToFind});
-//     resp.json(user);
-// });
-
 userRoutes.post('/check', async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
     try{
         const body = req.body
@@ -69,25 +63,25 @@ userRoutes.post('/create', exjwt({secret:jwtSecretAdmin}), async (req: express.R
         const body = req.body;
         let existUser = (await User.findOne({username: body.username})).toJSON();
         if(!existUser){
-            let insertedUser = new User();
+            let user = new User();
             if(body.username !== 'admin'){
-                insertedUser = new User({
+                user = new User({
                     username:body.username, 
                     password:body.password,
                     validity: true
                 });
             } else {
-                insertedUser = new User({
+                user = new User({
                     username:body.username,
                     password:body.password,
                     validity: true
                 });
             }
-            insertedUser.save( function (err, user) {
+            user.save( function (err, user) {
             if (err) return console.error(err);
             return user;
             });
-            console.log(insertedUser.toJSON());
+            console.log(user.toJSON());
             resp.status(200).json({success: true, err: null});
         } else {
             resp.status(403).json({success: false, err: "user already exist"});

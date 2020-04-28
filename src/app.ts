@@ -3,6 +3,7 @@ import * as cors from 'cors';
 import * as bodyparser from 'body-parser';
 import { requestLoggerMiddleware } from './request.logger.middleware';
 import { userRoutes } from './models/user.controller'
+import { textSurveyRoutes } from './models/text-survey.controller'
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(cors());
 app.use(bodyparser.json());
 app.use(requestLoggerMiddleware)
 app.use('/user',userRoutes);
+app.use('/text-survey',textSurveyRoutes);
 
 //JWT Error Handling
 app.use(function (err:express.ErrorRequestHandler, req:express.Request, resp:express.Response, next:express.NextFunction) {
@@ -25,6 +27,9 @@ app.use(function (err:express.ErrorRequestHandler, req:express.Request, resp:exp
 console.log('Exposed API Routes:')
 userRoutes.stack.forEach((route)=>{
     console.log("  "+route.route.stack[0].method.toString().toUpperCase() + "\t/user" + route.route.path );
+});
+textSurveyRoutes.stack.forEach((route)=>{
+    console.log("  "+route.route.stack[0].method.toString().toUpperCase() + "\t/text-survey" + route.route.path );
 });
 console.log();
 
