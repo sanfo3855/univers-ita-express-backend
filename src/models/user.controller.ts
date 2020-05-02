@@ -16,7 +16,6 @@ userRoutes.get('/all', exjwt({secret: jwtSecretAdmin}), async (req: express.Requ
         let items: any = await User.find({});
         console.log(items);
         items = items.map((item) => {
-            //username:student-GG-MM-YYYY, password:password, validity:true/false
             return {id: item._id, username: item.username, password: item.password, validity: item.validity}
         });
         resp.json(items);
