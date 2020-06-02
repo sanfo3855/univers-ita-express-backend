@@ -16,7 +16,7 @@ userRoutes.get('/all', exjwt({secret: jwtSecretAdmin}), async (req: express.Requ
         let items: any = await User.find({});
         console.log(items);
         items = items.map((item) => {
-            return {id: item._id, username: item.username, password: item.password, validity: item.validity}
+            return {id: item._id, username: item.username, password: item.password, type: item.type, validity: item.validity}
         });
         resp.json(items);
     } catch (err) {
@@ -35,12 +35,15 @@ userRoutes.post('/check', async (req: express.Request, resp: express.Response, n
             if (body.password === user.password) {
                 if (user.validity === true) {
                     let token: string;
-                    if (user.username === 'admin') {
+                    if (user.type === 'admin') {
                         token = jwt.sign({id: user.id, username: user.username}, jwtSecretAdmin, {expiresIn: '24h'});
-                    } else {
+                        resp.status(200).json({success: true, err: null, token: token})
+                    } else if (user.type === 'student') {
                         token = jwt.sign({id: user.id, username: user.username}, jwtSecretStudents, {expiresIn: '24h'});
+                        resp.status(200).json({success: true, err: null, token: token})
+                    } else {
+                        resp.status(403).json({success: false, err: "user type wrong or not specified"})
                     }
-                    resp.status(200).json({success: true, err: null, token: token})
                 } else {
                     resp.status(403).json({success: false, err: 'expired validity', token: null})
                 }
@@ -69,12 +72,14 @@ userRoutes.post('/create', exjwt({secret: jwtSecretAdmin}), async (req: express.
                 user = new User({
                     username: body.username,
                     password: body.password,
+                    type: body.type,
                     validity: true
                 });
             } else {
                 user = new User({
                     username: body.username,
                     password: body.password,
+                    type: body.type,
                     validity: true
                 });
             }
