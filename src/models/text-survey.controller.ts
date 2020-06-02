@@ -19,10 +19,10 @@ textSurveyRoutes.post('/save', exjwt({secret:jwtSecretStudents}), async (req:exp
             text:text,
             questions:questions
         });
-        textSurvey.save( function (err, user) {
+        await textSurvey.save(function (err, user) {
             if (err) return console.error(err);
             return user;
-            });
+        });
         console.log(textSurvey);
         resp.status(200).json({success:true,err:null});
     } catch (err) {
@@ -34,6 +34,21 @@ textSurveyRoutes.post('/save', exjwt({secret:jwtSecretStudents}), async (req:exp
 
 textSurveyRoutes.get('/stats', exjwt({secret:jwtSecretAdmin}), async (req:express.Request,resp:express.Response,next:express.NextFunction) => {
     //get stat related to text and analytics
+})
+
+textSurveyRoutes.get('/all', exjwt({secret:jwtSecretAdmin}), async (req:express.Request,resp:express.Response,next:express.NextFunction) => {
+    try {
+        let items: any = await TextSurvey.find({});
+        console.log(items);
+        items = items.map((item) => {
+            return {id: item._id, text: item.text, questions: item.questions}
+        });
+        resp.json(items);
+    } catch (err) {
+        resp.status(500);
+        resp.end();
+        console.error('Caught error', err);
+    }
 })
 
 

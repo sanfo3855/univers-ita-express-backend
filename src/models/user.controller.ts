@@ -29,8 +29,9 @@ userRoutes.get('/all', exjwt({secret: jwtSecretAdmin}), async (req: express.Requ
 userRoutes.post('/check', async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
     try {
         const body = req.body
-        let user = (await User.findOne({username: body.username})).toJSON();
-        if (user) {
+        let userDoc = await User.findOne({username: body.username})
+        if (userDoc) {
+            let user = userDoc.toJSON();
             if (body.password === user.password) {
                 if (user.validity === true) {
                     let token: string;
@@ -107,6 +108,26 @@ userRoutes.post('/expire', exjwt({secret: jwtSecretAdmin}), async (req: express.
             } else {
                 resp.status(403).json({success: false, err: 'already expired'});
             }
+        } else {
+            resp.status(403).json({success: false, err: 'user not found'});
+        }
+    } catch (err) {
+        resp.status(500);
+        resp.end();
+        console.error('Caught error', err);
+    }
+});
+
+userRoutes.delete('/delete', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+    try {
+        const body = req.body;
+        console.log('Deleting username: ' + body.username);
+        let response = {};
+        let userDoc = await User.findOne({username: body.username})
+        if (userDoc) {
+            let user = userDoc.toJSON();
+            await User.findOneAndDelete({username: body.username}, user);
+            resp.status(200).json({success: true, err: null});
         } else {
             resp.status(403).json({success: false, err: 'user not found'});
         }

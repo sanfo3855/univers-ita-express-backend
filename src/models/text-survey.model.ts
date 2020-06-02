@@ -8,6 +8,6 @@ const TextSurveySchema = new mongoose.Schema({
     }]
 });
 
-const TextSurvey = mongoose.model('textSurvey', TextSurveySchema);
+const TextSurvey = mongoose.model('text-survey', TextSurveySchema);
 
 export { TextSurvey }
