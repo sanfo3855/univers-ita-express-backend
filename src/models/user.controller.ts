@@ -36,22 +36,22 @@ userRoutes.post('/check', async (req: express.Request, resp: express.Response, n
                 if (user.validity === true) {
                     let token: string;
                     if (user.type === 'admin') {
-                        token = jwt.sign({id: user.id, username: user.username}, jwtSecretAdmin, {expiresIn: '24h'});
+                        token = jwt.sign({id: user.id, username: user.username, type: user.type}, jwtSecretAdmin, {expiresIn: '24h'});
                         resp.status(200).json({success: true, err: null, token: token})
                     } else if (user.type === 'student') {
-                        token = jwt.sign({id: user.id, username: user.username}, jwtSecretStudents, {expiresIn: '24h'});
+                        token = jwt.sign({id: user.id, username: user.username, type: user.type}, jwtSecretStudents, {expiresIn: '2h'});
                         resp.status(200).json({success: true, err: null, token: token})
                     } else {
                         resp.status(403).json({success: false, err: "user type wrong or not specified"})
                     }
                 } else {
-                    resp.status(403).json({success: false, err: 'expired validity', token: null})
+                    resp.status(200).json({success: false, err: 'Utente scaduto/disabilitato', token: null})
                 }
             } else {
-                resp.status(403).json({success: false, err: 'wrong password', token: null})
+                resp.status(200).json({success: false, err: 'Password sbagliata', token: null})
             }
         } else {
-            resp.status(404).json({success: false, err: 'user not found', token: null})
+            resp.status(200).json({success: false, err: 'Utente non trovato', token: null})
         }
     } catch (err) {
         resp.status(500);
