@@ -18,10 +18,9 @@ userRoutes.get('/all', exjwt({secret: jwtSecretAdmin}), async (req: express.Requ
         items = items.map((item) => {
             return {id: item._id, username: item.username, password: item.password, type: item.type, validity: item.validity}
         });
-        resp.json(items);
+        resp.json({success:true, err:null, response:items});
     } catch (err) {
-        resp.status(500);
-        resp.end();
+        resp.json({success: false, err:"error fetching users",});
         console.error('Caught error', err);
     }
 });
@@ -99,20 +98,16 @@ userRoutes.post('/create', exjwt({secret: jwtSecretAdmin}), async (req: express.
     }
 });
 
-userRoutes.post('/expire', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+userRoutes.post('/change-validity', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
     try {
         const body = req.body;
-        console.log('Exipring username: ' + body.username);
+        console.log('Change validity to username: ' + body.username);
         let response = {};
         let user = (await User.findOne({username: body.username})).toJSON();
         if (user) {
-            if (user.validity === true) {
-                user.validity = false;
-                await User.findOneAndUpdate({username: body.username}, user);
-                resp.status(200).json({success: true, err: null});
-            } else {
-                resp.status(403).json({success: false, err: 'already expired'});
-            }
+            user.validity = body.validity;
+            await User.findOneAndUpdate({username: body.username}, user);
+            resp.status(200).json({success: true, err: null});
         } else {
             resp.status(403).json({success: false, err: 'user not found'});
         }
@@ -123,7 +118,7 @@ userRoutes.post('/expire', exjwt({secret: jwtSecretAdmin}), async (req: express.
     }
 });
 
-userRoutes.delete('/delete', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+userRoutes.post('/delete', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
     try {
         const body = req.body;
         console.log('Deleting username: ' + body.username);
