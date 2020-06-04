@@ -89,7 +89,7 @@ userRoutes.post('/create', exjwt({secret: jwtSecretAdmin}), async (req: express.
             console.log(user.toJSON());
             resp.status(200).json({success: true, err: null});
         } else {
-            resp.status(403).json({success: false, err: "user already exist"});
+            resp.status(200).json({success: false, err: "Utente già esistente"});
         }
     } catch (err) {
         resp.status(500);
