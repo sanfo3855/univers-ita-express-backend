@@ -38,7 +38,7 @@ userRoutes.post('/check', async (req: express.Request, resp: express.Response, n
                         token = jwt.sign({id: user.id, username: user.username, type: user.type}, jwtSecretAdmin, {expiresIn: '24h'});
                         resp.status(200).json({success: true, err: null, token: token})
                     } else if (user.type === 'student') {
-                        token = jwt.sign({id: user.id, username: user.username, type: user.type}, jwtSecretStudents, {expiresIn: '2h'});
+                        token = jwt.sign({id: user.id, username: user.username, type: user.type}, jwtSecretStudents, {expiresIn: '1m'});
                         resp.status(200).json({success: true, err: null, token: token})
                     } else {
                         resp.status(403).json({success: false, err: "user type wrong or not specified"})
