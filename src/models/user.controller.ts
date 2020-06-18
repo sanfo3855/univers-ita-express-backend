@@ -52,7 +52,7 @@ userRoutes.post('/check', async (req: express.Request, resp: express.Response, n
                             id: user.id,
                             username: user.username,
                             type: user.type
-                        }, jwtSecretStudents, {expiresIn: '1m'});
+                        }, jwtSecretStudents, {expiresIn: '2h'});
                         resp.status(200).json({success: true, err: null, token: token})
                     } else {
                         resp.status(403).json({success: false, err: "user type wrong or not specified"})
