@@ -15,9 +15,13 @@ textSurveyRoutes.post('/save', exjwt({secret:jwtSecretStudents}), async (req:exp
     try{
         const text = req.body.text
         const questions = req.body.questions;
+        console.log(text);
+        console.log(questions);
+
         let textSurvey = new TextSurvey({
-            text:text,
-            questions:questions
+            text: text,
+            questions: questions,
+            date: getCurrentDate()
         });
         await textSurvey.save(function (err, user) {
             if (err) return console.error(err);
