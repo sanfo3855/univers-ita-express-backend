@@ -7,8 +7,8 @@ import * as exjwt from 'express-jwt';
 const textSurveyRoutes = express.Router();
 
 function getCurrentDate():Date { 
-    let now = new Date(Date.now())
-    return new Date(now.getFullYear()+"-"+now.getMonth()+"-"+now.getDay());
+    let now = new Date(Date.now());
+    return new Date(now.toString().substr(0,10));
 }
 
 textSurveyRoutes.post('/save', exjwt({secret:jwtSecretStudents}), async (req:express.Request,resp:express.Response,next:express.NextFunction) => {
@@ -17,11 +17,12 @@ textSurveyRoutes.post('/save', exjwt({secret:jwtSecretStudents}), async (req:exp
         const questions = req.body.questions;
         console.log(text);
         console.log(questions);
+        console.log(getCurrentDate());
 
         let textSurvey = new TextSurvey({
             text: text,
             questions: questions,
-            date: getCurrentDate()
+            date: Date.now()
         });
         await textSurvey.save(function (err, user) {
             if (err) return console.error(err);
