@@ -28,7 +28,6 @@ textSurveyRoutes.post('/save', exjwt({secret:jwtSecretStudents}), async (req:exp
             if (err) return console.error(err);
             return user;
         });
-        console.log(textSurvey);
         resp.status(200).json({success:true,err:null});
     } catch (err) {
         resp.status(500);

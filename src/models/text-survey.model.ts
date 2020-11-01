@@ -3,10 +3,7 @@ import {Schema} from "mongoose";
 
 const TextSurveySchema = new mongoose.Schema({
     text: {type: String, required:true},
-    questions: [{
-        question: {type: String, required:true},
-        answer: {type: Schema.Types.Mixed, required: true}
-    }],
+    questions: {type:Schema.Types.Mixed, required: false},
     date: {type: Date, required: true}
 });
 
