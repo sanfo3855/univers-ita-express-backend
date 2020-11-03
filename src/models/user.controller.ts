@@ -143,4 +143,26 @@ userRoutes.post('/delete', exjwt({secret: jwtSecretAdmin}), async (req: express.
     }
 });
 
+userRoutes.get('/imFeelingLucky',  exjwt({secret: jwtSecretStudents}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+    const random_boolean = Math.random() >= 0.5;
+    if(random_boolean) {
+        let date = new Date();
+        date.setDate(date.getDate() + 30);
+        let expire = date.toISOString()
+        resp.status(200).json({lucky: true, code: makeid(10), expire: expire});
+    } else {
+        resp.status(200).json({lucky: false, code: null});
+    }
+});
+
+function makeid(length: number) {
+    let result           = '';
+    let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
 export {userRoutes}
