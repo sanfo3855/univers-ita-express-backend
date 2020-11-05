@@ -13,14 +13,13 @@ function getCurrentDate():Date {
 
 textSurveyRoutes.post('/save', exjwt({secret:jwtSecretStudents}), async (req:express.Request,resp:express.Response,next:express.NextFunction) => {
     req.body.questions = JSON.stringify(req.body.questions)
-    console.log(req)
+    console.log("/text-survey/save");
+    console.log(Date.now());
+    console.log(req.body);
     console.log("===================================\n\n")
     try{
         const text = req.body.text
         const questions = req.body.questions;
-        // console.log(text);
-        // console.log(questions);
-        // console.log(getCurrentDate());
 
         let textSurvey = new TextSurvey({
             text: text,
@@ -44,7 +43,10 @@ textSurveyRoutes.get('/stats', exjwt({secret:jwtSecretAdmin}), async (req:expres
 })
 
 textSurveyRoutes.get('/all', exjwt({secret:jwtSecretAdmin}), async (req:express.Request,resp:express.Response,next:express.NextFunction) => {
-    console.log(req)
+    console.log("/text-survey/all");
+    console.log(Date.now());
+    console.log(req.body);
+    console.log("===================================\n\n")
     try {
         let items: any = await TextSurvey.find({});
         console.log(items);
