@@ -12,9 +12,10 @@ function getCurrentDate(): Date {
 }
 
 userRoutes.get('/all', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+    console.log(req)
     try {
         let items: any = await User.find({});
-        console.log(items);
+        // console.log(items);
         items = items.map((item) => {
             return {
                 id: item._id,
@@ -32,6 +33,7 @@ userRoutes.get('/all', exjwt({secret: jwtSecretAdmin}), async (req: express.Requ
 });
 
 userRoutes.post('/check', async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+    console.log(req)
     try {
         const body = req.body
         let userDoc = await User.findOne({username: body.username})
@@ -74,9 +76,10 @@ userRoutes.post('/check', async (req: express.Request, resp: express.Response, n
 });
 
 userRoutes.post('/create', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+    console.log(req)
     try {
         const body = req.body;
-        console.log(body);
+        //console.log(body);
         let existUser = await User.findOne({username: body.username});
         // console.log(existUser);
         if (!existUser) {
@@ -104,6 +107,7 @@ userRoutes.post('/create', exjwt({secret: jwtSecretAdmin}), async (req: express.
 ;
 
 userRoutes.post('/change-validity', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+    console.log(req)
     try {
         const body = req.body;
         console.log('Change validity to username: ' + body.username);
@@ -124,6 +128,7 @@ userRoutes.post('/change-validity', exjwt({secret: jwtSecretAdmin}), async (req:
 });
 
 userRoutes.post('/delete', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+    console.log(req)
     try {
         const body = req.body;
         console.log('Deleting username: ' + body.username);
@@ -144,6 +149,7 @@ userRoutes.post('/delete', exjwt({secret: jwtSecretAdmin}), async (req: express.
 });
 
 userRoutes.get('/imFeelingLucky',  exjwt({secret: jwtSecretStudents}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
+    console.log(req)
     const random_boolean = Math.random() >= 0.5;
     if(random_boolean) {
         let date = new Date();
