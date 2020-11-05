@@ -31,6 +31,5 @@ userRoutes.stack.forEach((route)=>{
 textSurveyRoutes.stack.forEach((route)=>{
     console.log("  "+route.route.stack[0].method.toString().toUpperCase() + "\t/text-survey" + route.route.path );
 });
-console.log();
 
 export { app }
