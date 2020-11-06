@@ -12,10 +12,6 @@ function getCurrentDate(): Date {
 }
 
 userRoutes.get('/all', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
-    console.log("/user/all");
-    console.log(Date.now());
-    console.log(req.body);
-    console.log("===================================\n\n")
     try {
         let items: any = await User.find({});
         // console.log(items);
@@ -36,10 +32,6 @@ userRoutes.get('/all', exjwt({secret: jwtSecretAdmin}), async (req: express.Requ
 });
 
 userRoutes.post('/check', async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
-    console.log("/user/check");
-    console.log(Date.now());
-    console.log(req.body);
-    console.log("===================================\n\n")
     try {
         const body = req.body
         let userDoc = await User.findOne({username: body.username})
@@ -82,10 +74,6 @@ userRoutes.post('/check', async (req: express.Request, resp: express.Response, n
 });
 
 userRoutes.post('/create', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
-    console.log("/user/create");
-    console.log(Date.now());
-    console.log(req.body);
-    console.log("===================================\n\n")
     try {
         const body = req.body;
         //console.log(body);
@@ -116,10 +104,6 @@ userRoutes.post('/create', exjwt({secret: jwtSecretAdmin}), async (req: express.
 ;
 
 userRoutes.post('/change-validity', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
-    console.log("/user/change-validity");
-    console.log(Date.now());
-    console.log(req.body);
-    console.log("===================================\n\n")
     try {
         const body = req.body;
         console.log('Change validity to username: ' + body.username);
@@ -140,10 +124,6 @@ userRoutes.post('/change-validity', exjwt({secret: jwtSecretAdmin}), async (req:
 });
 
 userRoutes.post('/delete', exjwt({secret: jwtSecretAdmin}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
-    console.log("/user/delete");
-    console.log(Date.now());
-    console.log(req.body);
-    console.log("===================================\n\n")
     try {
         const body = req.body;
         console.log('Deleting username: ' + body.username);
@@ -164,10 +144,6 @@ userRoutes.post('/delete', exjwt({secret: jwtSecretAdmin}), async (req: express.
 });
 
 userRoutes.get('/imFeelingLucky',  exjwt({secret: jwtSecretStudents}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
-    console.log("/user/imFeelingLucky");
-    console.log(Date.now());
-    console.log(req.body);
-    console.log("===================================\n\n")
     const random_boolean = Math.random() >= 0.5;
     if(random_boolean) {
         let date = new Date();

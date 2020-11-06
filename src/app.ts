@@ -5,6 +5,8 @@ import { requestLoggerMiddleware } from './request.logger.middleware';
 import { userRoutes } from './models/user.controller'
 import { textSurveyRoutes } from './models/text-survey.controller'
 
+process.removeAllListeners('warning')
+
 const app = express();
 
 app.use(cors());
