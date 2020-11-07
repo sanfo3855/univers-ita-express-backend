@@ -14,12 +14,14 @@ function getCurrentDate():Date {
 textSurveyRoutes.post('/save', exjwt({secret:jwtSecretStudents}), async (req:express.Request,resp:express.Response,next:express.NextFunction) => {
     req.body.questions = JSON.stringify(req.body.questions)
     try{
-        const text = req.body.text
+        const student = req.body.student;
+        const text = req.body.text;
         const questions = req.body.questions;
 
         let textSurvey = new TextSurvey({
+            student: student,
             text: text,
-            questions: questions,
+            questions: JSON.parse(questions),
             date: Date.now()
         });
         await textSurvey.save(function (err, user) {
