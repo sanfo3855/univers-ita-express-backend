@@ -144,7 +144,8 @@ userRoutes.post('/delete', exjwt({secret: jwtSecretAdmin}), async (req: express.
 });
 
 userRoutes.get('/imFeelingLucky',  exjwt({secret: jwtSecretStudents}), async (req: express.Request, resp: express.Response, next: express.NextFunction) => {
-    const random_boolean = Math.random() >= 0.5;
+    let random_boolean = Math.random() >= 0.5;
+    random_boolean = false;
     if(random_boolean) {
         let date = new Date();
         date.setDate(date.getDate() + 30);
