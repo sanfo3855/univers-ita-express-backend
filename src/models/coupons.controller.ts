@@ -7,6 +7,7 @@ import {User} from "./user.model";
 
 const couponsRoutes = express.Router();
 
+let nextWinner = 10;
 
 couponsRoutes.post('/upload', exjwt({secret:jwtSecretAdmin}), async (req:express.Request, resp:express.Response, next:express.NextFunction) => {
     try{
@@ -29,14 +30,42 @@ couponsRoutes.post('/upload', exjwt({secret:jwtSecretAdmin}), async (req:express
         }
         resp.status(200).json({success:true,err:null});
     } catch (err) {
-        resp.status(500);
+        resp.status(500).json({success:false,err:err.message});
         resp.end();
         console.error('Caught error', err);
     }
 });
 
-couponsRoutes.get('/imFeelingLucky', exjwt({secret:jwtSecretAdmin}), async (req:express.Request, resp:express.Response, next:express.NextFunction) => {
+async function isNextWinner(){
+    let counter = await CouponCounter.findOne({});
+    if(counter === null) {
+        let coupCounter = new CouponCounter({counter:10})
+        counter = await coupCounter.save(function (err, counter) {
+            if (err) return console.error(err);
+            return counter;
+        });
+    } else {
+        if(counter[0].counter === 0) {
 
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+}
+
+couponsRoutes.get('/imFeelingLucky', exjwt({secret:jwtSecretStudents}), async (req:express.Request, resp:express.Response, next:express.NextFunction) => {
+    try {
+        //let isNextWinnerBool = await isNextWinner();
+        //console.log(nextWinner);
+
+        resp.status(200).json({success:true, err:null, response:{lucky: false, code: null, expire: 1}});
+    } catch (err) {
+        resp.status(500).json({success:false,err:err.message});
+        resp.end();
+        console.error('Caught error', err);
+    }
 });
 
 couponsRoutes.get('/all', exjwt({secret:jwtSecretAdmin}), async (req:express.Request, resp:express.Response, next:express.NextFunction) => {
@@ -54,7 +83,7 @@ couponsRoutes.get('/all', exjwt({secret:jwtSecretAdmin}), async (req:express.Req
         });
         resp.json({success: true, err: null, response: items});
     } catch (err) {
-        resp.status(500);
+        resp.status(500).json({success:false,err:err.message});
         resp.end();
         console.error('Caught error', err);
     }

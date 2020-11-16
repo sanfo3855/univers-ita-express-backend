@@ -9,7 +9,8 @@ const CouponsSchema = new mongoose.Schema({
 });
 
 const CouponCounterSchema = new mongoose.Schema({
-    counter: {type: Number, required: true}
+    counter: {type: Number, required: true},
+    find:  {type: String, required: true}
 });
 
 const Coupon = mongoose.model('coupon', CouponsSchema)
