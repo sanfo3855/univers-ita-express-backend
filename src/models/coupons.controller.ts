@@ -1,13 +1,12 @@
 import * as express from 'express';
-import { Coupon, CouponCounter } from './coupons.model';
+import { Coupon } from './coupons.model';
 import * as jwt from 'jsonwebtoken';
 import { jwtSecretAdmin, jwtSecretStudents } from '../environment.dev';
 import * as exjwt from 'express-jwt';
-import {User} from "./user.model";
 
 const couponsRoutes = express.Router();
 
-let nextWinner = 10;
+const fs = require('fs');
 
 couponsRoutes.post('/upload', exjwt({secret:jwtSecretAdmin}), async (req:express.Request, resp:express.Response, next:express.NextFunction) => {
     try{
@@ -15,12 +14,14 @@ couponsRoutes.post('/upload', exjwt({secret:jwtSecretAdmin}), async (req:express
         const expiration = req.body.expirationDate;
         const expirationDate =  expiration.day + "-" + expiration.month + "-" + expiration.year;
         const site = req.body.site;
+        const value = req.body.value;
 
         for(let code of codes) {
             let coupon = new Coupon({
                 code: code,
                 expirationDate: expirationDate,
                 site: site,
+                value: value,
                 given: false
             });
             await coupon.save(function (err, user) {
@@ -36,31 +37,46 @@ couponsRoutes.post('/upload', exjwt({secret:jwtSecretAdmin}), async (req:express
     }
 });
 
-async function isNextWinner(){
-    let counter = await CouponCounter.findOne({});
-    if(counter === null) {
-        let coupCounter = new CouponCounter({counter:10})
-        counter = await coupCounter.save(function (err, counter) {
-            if (err) return console.error(err);
-            return counter;
-        });
+function isNextWinner(){
+    let count = Number(fs.readFileSync('./count'))
+    console.log(count)
+    if(count === null) {
+        count = 10;
+    }
+    if(count <= 1) {
+        fs.writeFileSync('./count',String(10));
+        return true;
     } else {
-        if(counter[0].counter === 0) {
-
-            return true;
-        } else {
-            return false;
-        }
-
+        fs.writeFileSync('./count', String(--count));
+        return false;
     }
 }
 
-couponsRoutes.get('/imFeelingLucky', exjwt({secret:jwtSecretStudents}), async (req:express.Request, resp:express.Response, next:express.NextFunction) => {
+couponsRoutes.post('/imFeelingLucky', exjwt({secret:jwtSecretStudents}), async (req:express.Request, resp:express.Response, next:express.NextFunction) => {
     try {
-        //let isNextWinnerBool = await isNextWinner();
-        //console.log(nextWinner);
+        let isNextWinnerBool = isNextWinner();
+        console.log(req.body.student);
+        if (isNextWinnerBool){
+            let coupon = await Coupon.findOne({given:false});
+            if(coupon!==null) {
+                await Coupon.updateOne({_id: coupon._id}, {$set: {given: true, student: req.body.student}});
+                let response = {
+                    lucky: true,
+                    code: coupon['code'],
+                    expire: coupon['expirationDate'],
+                    site: coupon['site'],
+                    value: coupon['value']
+                }
+                resp.status(200).json({success: true, err: null, response: response});
+            } else {
+                let response = {lucky: false, code: null, expire: null, site: null, value: null}
+                resp.status(200).json({success: true, err: null, response: response});
+            }
+        } else {
+            let response = {lucky: false, code: null, expire: null, site: null, value: null}
+            resp.status(200).json({success:true, err:null, response:response});
+        }
 
-        resp.status(200).json({success:true, err:null, response:{lucky: false, code: null, expire: 1}});
     } catch (err) {
         resp.status(500).json({success:false,err:err.message});
         resp.end();
@@ -91,11 +107,10 @@ couponsRoutes.get('/all', exjwt({secret:jwtSecretAdmin}), async (req:express.Req
 
 couponsRoutes.get('/stats', exjwt({secret:jwtSecretAdmin}), async (req:express.Request, resp:express.Response, next:express.NextFunction) => {
     try{
-        let counter = await CouponCounter.findOne({});
-        console.log(counter);
+        let counter = Number(fs.readFileSync('./count'))
         const response = {
             remaining: await Coupon.find({given:false}).count(),
-            counter: counter ? counter[0].counter : '10'
+            counter: counter
         }
         resp.json({success: true, err: null, response: response});
     } catch (err) {

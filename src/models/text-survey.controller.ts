@@ -41,13 +41,15 @@ textSurveyRoutes.get('/stats', exjwt({secret:jwtSecretAdmin}), async (req:expres
     try {
         let response = []
         let users: any = await User.find({});
+        let total = 0;
         for (let user of users) {
             let count = await TextSurvey.find({student: user.username}).count()
+            total = total + count;
             if (count != 0) {
                 response.push({username: user.username, count: count});
             }
         }
-        resp.json(response)
+        resp.json({measurements:response,totalMeasurements:total})
     } catch (err) {
         resp.status(500);
         resp.end();
