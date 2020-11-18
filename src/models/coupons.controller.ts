@@ -97,7 +97,7 @@ couponsRoutes.get('/all', exjwt({secret:jwtSecretAdmin}), async (req:express.Req
                 student: item.student
             }
         });
-        resp.json({success: true, err: null, response: items});
+        resp.status(200).json({success: true, err: null, response: items});
     } catch (err) {
         resp.status(500).json({success:false,err:err.message});
         resp.end();
@@ -112,7 +112,7 @@ couponsRoutes.get('/stats', exjwt({secret:jwtSecretAdmin}), async (req:express.R
             remaining: await Coupon.find({given:false}).count(),
             counter: counter
         }
-        resp.json({success: true, err: null, response: response});
+        resp.status(200).json({success: true, err: null, response: response});
     } catch (err) {
         resp.status(500);
         resp.end();
