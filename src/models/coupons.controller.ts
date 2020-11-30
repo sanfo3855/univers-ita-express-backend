@@ -41,10 +41,10 @@ function isNextWinner(){
     let count = Number(fs.readFileSync('./count'))
     console.log(count)
     if(count === null) {
-        count = 10;
+        count = 5;
     }
     if(count <= 1) {
-        fs.writeFileSync('./count',String(10));
+        fs.writeFileSync('./count',String(5));
         return true;
     } else {
         fs.writeFileSync('./count', String(--count));
