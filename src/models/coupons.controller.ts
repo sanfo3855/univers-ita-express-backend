@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { Coupon } from './coupons.model';
 import * as jwt from 'jsonwebtoken';
-import { jwtSecretAdmin, jwtSecretStudents } from '../environment.dev';
+import { jwtSecretAdmin, jwtSecretStudents, couponMaxCount} from '../environment.dev';
 import * as exjwt from 'express-jwt';
 
 const couponsRoutes = express.Router();
@@ -41,10 +41,10 @@ function isNextWinner(){
     let count = Number(fs.readFileSync('./count'))
     console.log(count)
     if(count === null) {
-        count = 5;
+        count = couponMaxCount;
     }
     if(count <= 1) {
-        fs.writeFileSync('./count',String(5));
+        fs.writeFileSync('./count',String(couponMaxCount));
         return true;
     } else {
         fs.writeFileSync('./count', String(--count));

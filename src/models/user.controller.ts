@@ -45,7 +45,7 @@ userRoutes.post('/check', async (req: express.Request, resp: express.Response, n
                             id: user.id,
                             username: user.username,
                             type: user.type
-                        }, jwtSecretAdmin, {expiresIn: '24h'});
+                        }, jwtSecretAdmin, {expiresIn: '7d'});
                         resp.status(200).json({success: true, err: null, token: token})
                     } else if (user.type === 'student') {
                         token = jwt.sign({
