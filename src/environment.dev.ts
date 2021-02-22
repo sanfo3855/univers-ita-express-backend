@@ -1,5 +1,5 @@
 const jwtSecretAdmin = 'secret-univers-ita-jwt-admin';
 const jwtSecretStudents = 'secret-univers-ita-jwt-students';
-const couponMaxCount = 2;
+const couponMaxCount = 5;
 
 export {jwtSecretAdmin, jwtSecretStudents, couponMaxCount}
